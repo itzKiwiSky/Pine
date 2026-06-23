@@ -3,6 +3,7 @@ package taiyo.runtime.packages.std;
 import taiyo.runtime.INativePackage.IPackage;
 import taiyo.lexer.LangError;
 import taiyo.runtime.Value;
+import StringTools;
 
 class MathLib implements IPackage
 {
@@ -156,6 +157,22 @@ class MathLib implements IPackage
             }
         }));
         
+        mod.set("round", NativeFuncVal(args ->
+        {
+            NativeUtils.expectArgs(args, "round", 2);
+            var num:Null<Float> = NativeUtils.toFloat(args[0]);
+            var precision:Null<Int> = NativeUtils.toInt(args[1]);
+            
+            var mult:Float = 1;
+            for (i in 0...precision)
+            {
+                mult *= 10;
+            }
+            var r = Math.fround(num * mult) / mult;
+            
+            return Ok(FloatVal(r));
+        }));
+        
         mod.set("tan", NativeFuncVal(args ->
         {
             NativeUtils.expectArgs(args, "tan", 1);
@@ -176,6 +193,26 @@ class MathLib implements IPackage
                 case IntVal(v): return Ok(FloatVal(Math.sqrt(v)));
                 case FloatVal(v): return Ok(FloatVal(Math.sqrt(v)));
                 case _: return Err(new LangError(null, null, RuntimeError, 'sqrt() expects a number'));
+            }
+        }));
+        
+        mod.set("strToInt", NativeFuncVal(args ->
+        {
+            NativeUtils.expectArgs(args, "strToInt", 1);
+            switch (args[0])
+            {
+                case StringVal(v): return Ok(IntVal(Std.parseInt(v)));
+                case _: return Err(new LangError(null, null, RuntimeError, 'strToInt() expects a string'));
+            }
+        }));
+        
+        mod.set("strToFloat", NativeFuncVal(args ->
+        {
+            NativeUtils.expectArgs(args, "strToFloat", 1);
+            switch (args[0])
+            {
+                case StringVal(v): return Ok(FloatVal(Std.parseFloat(v)));
+                case _: return Err(new LangError(null, null, RuntimeError, 'strToFloat() expects a string'));
             }
         }));
         

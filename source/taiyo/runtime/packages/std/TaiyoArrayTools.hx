@@ -236,31 +236,6 @@ class TaiyoArrayTools implements IPackage
             }
         }));
         
-        mod.set("create", NativeFuncVal(args ->
-        {
-            if (args.length != 1)
-                return Err(new LangError(null, null, RuntimeError, 'shift() expects 1 argument'));
-            switch (args[0])
-            {
-                case ArrayVal(arr):
-                    if (arr.length == 0)
-                        return Err(new LangError(null, null, RuntimeError, 'shift() called on empty array'));
-                    return Ok(arr.shift());
-                case _:
-                    return Err(new LangError(null, null, RuntimeError, 'shift() expects an array as first argument'));
-            }
-        }));
-        
-        mod.set("create", NativeFuncVal(args ->
-        {
-            if (args.length != 1)
-                return Err(new LangError(null, null, RuntimeError, 'create() expects 1 argument'));
-            var size = NativeUtils.toInt(args[0]);
-            if (size == null || size < 0)
-                return Err(new LangError(null, null, RuntimeError, 'create() expects a positive integer'));
-            return Ok(ArrayVal([for (_ in 0...size) NullVal]));
-        }));
-        
         return mod;
     }
     
